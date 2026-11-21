@@ -1,79 +1,53 @@
-# Assignment Report
-## Design, Implement and Validate a Reliable Billing Program for a Rural Electricity Co-operative
+# C Programming Assignment 3 – CO3
+## Student B Individual Report
 
-**Student:** V. Hinduja  
-**Register Number:** 1912260411  
-**Course:** C Programming – CO1  
-**Compiler:** GCC (version to be recorded from the system)  
-**GitHub repository:** `https://github.com/<your-username>/CSA02-1912260411-Assignment1`
+**Student name:** V. Hinduja  
+**Register number:** 1912260411  
+**Course code:** CSA02  
+**Course:** C Programming  
+**Compiler:** GCC – exact version to be filled after running `gcc --version`  
+**GitHub repository:** Add the working repository URL here
 
-## Abstract
-This assignment analyses a rural electricity billing system, selects appropriate C data types, implements slab tariffs using integer paise, validates meter rollover and input, and redesigns the application for smart-meter readings and time-of-day tariffs. The original tariff is a ₹50 fixed charge, first 100 units free, units 101–200 at ₹2.25 each, and units above 200 at ₹4.50 each.
+## Scope and contribution
+This report documents the Student B primary responsibilities in Q1–Q7, with the shared implementations needed to execute and validate each question. The source assignment is pair-work in its original PDF; this submission is organised as requested into Student B sections only. The source PDF also states that every student must understand and execute every question, so the student should be prepared to explain all submitted code.
 
-## Design assumptions
-- A conventional meter register is 16-bit and stores readings from 0 through 65535.
-- One rollover between readings is possible; consumption is calculated modulo 65536.
-- The rollover formula cannot detect multiple revolutions or a faulty reading by itself.
-- Currency is stored as integer paise.
-- For the smart-meter demonstration, each input is a watt-hour interval reading and the operator supplies tariff values in paise/kWh at runtime.
-- The 35,040 readings/year assumption is 365 × 24 × 4.
+## Q1 – Searching a Library Catalogue (Student B: Experimental Investigation)
+The program compares linear and binary search for 1,000, 10,000 and 100,000 accession numbers. It records successful and unsuccessful comparison counts as CSV. Linear search is O(n); binary search is O(log n) and requires sorted input. For 100,000 entries, binary search needs roughly 17 iterations in the worst case, while linear search may inspect all 100,000 elements. Run the program and preserve its CSV output as experimental evidence. Binary search is worthwhile when frequent searches justify maintaining sorted order; update frequency and insertion cost must be considered.
 
-## Bill formula
-Let `u` be consumed units. Energy charge in paise:
-- `0` for `u <= 100`;
-- `(u - 100) × 225` for `100 < u <= 200`;
-- `100 × 225 + (u - 200) × 450` for `u > 200`.
-Add fixed charge `5000` paise.
+## Q2 – Sorting the Examination Hall Seating Register (Student B: Comparative Measurement)
+The implementation measures comparisons, swaps and shifts for bubble, selection and insertion sort over sorted, nearly sorted, reverse and random data at n=100, 1,000 and 10,000. The program prints a CSV suitable for graphs. Insertion sort is recommended for a list that is sorted except for a small number of late entries because it is adaptive and typically performs close to linear work when disorder is limited. Selection sort retains quadratic comparisons even for sorted input. Bubble sort benefits from its early-exit flag on already sorted data. Bubble and insertion are stable in the supplied forms; selection sort is generally unstable.
 
-| Units | Fixed charge | Energy charge | Total |
-|---:|---:|---:|---:|
-| 0 | ₹50.00 | ₹0.00 | ₹50.00 |
-| 100 | ₹50.00 | ₹0.00 | ₹50.00 |
-| 150 | ₹50.00 | ₹112.50 | ₹162.50 |
-| 200 | ₹50.00 | ₹225.00 | ₹275.00 |
-| 350 | ₹50.00 | ₹900.00 | ₹950.00 |
+## Q3 – Merging Two Merit Lists (Student B: Merge Design and Correctness)
+The merge program combines descending arrays in O(m+n) time using a third array. At each step, it compares the current unconsumed scores and emits the larger. Each comparison consumes one element, so there are at most m+n-1 comparisons when both arrays are nonempty. Remaining elements are copied after one list ends. The `>=` condition preserves campus A before campus B for equal scores. Extra output storage is O(m+n). Concatenate-and-qsort is O((m+n)log(m+n)); a simple in-place merge can require O(m*n) shifts.
 
-## Data types and scale
-Use `uint16_t` for a meter register, `uint32_t` for units and household count, and `uint64_t` for paise totals. The actual sizes must be confirmed with `sizeof` and the compiler version recorded. Integer paise avoids binary floating-point representation and repeated rounding errors. At 800,000 households, aggregate totals should be calculated in 64-bit integer arithmetic and checked for overflow.
+## Q4 – Two-Dimensional Arrays: District Rainfall Records (Student B: Implementation and Verification)
+Four separate functions compute row totals, column averages, maximum rainfall and deficient rows. The 3×4 test matrix is:
+```
+10 20 30 40
+ 5 10 15 20
+50 60 70 80
+```
+Expected row totals: 100, 50, 260. Column averages: 21.67, 30.00, 38.33, 46.67. Overall average: 34.17. Maximum: 80 at row 2, column 3. Deficient row: index 1. The benchmark compares row-wise and column-wise traversal of a 2,000×2,000 array. Row-wise traversal is expected to be faster because C stores 2-D arrays in row-major order and adjacent elements are contiguous. Insert actual measured times from your computer.
 
-## Complexity
-For a fixed number of tariff slabs, a single bill is O(1) time and O(1) extra space. For `n` meter readings, annual aggregation is O(n) time and O(1) accumulator space. Storing all interval readings instead would require O(n) memory. Parsing a text reading with `d` digits takes O(d) time and O(d) storage for a string buffer; arithmetic on a fixed-width integer is O(1).
+## Q5 – Processing Text Without the Library (Student B: Library Functions and Safety)
+The implementation demonstrates word counting, palindrome checking, upper-case conversion, reversal and bounded copying. `strcpy` is unsafe if the destination is too small because it does not check capacity. `snprintf` limits output to the destination size; `fgets` is preferred for bounded input. `gets` was removed because it cannot prevent buffer overflow. The custom word counter handles spaces, tabs, newlines and carriage returns. Loop-based processing is O(n); repeatedly calling `strlen` in a loop condition can make the total O(n²). Recursive reversal uses O(n) stack space; iterative reversal uses O(1).
 
-## Macro safety
-Function-like macros need parentheses around parameters and the full expression. `SQUARE(x)` must be `((x) * (x))`; even then, `SQUARE(i++)` is unsafe because the argument is evaluated twice. `MAX(a,b)` may also evaluate one argument more than once. Prefer a typed `static inline` function when suitable. `gcc -E` shows preprocessor expansion.
+## Q6 – A Directory of Names: Sorting and Searching Strings (Student B: Design and Correctness)
+`strcmp` compares character codes and is case-sensitive, so differently capitalised names can have different sort positions. Case-insensitive comparison can compare `tolower((unsigned char)c)` values. The program reads names with `fgets`, removes the newline, sorts names, detects adjacent duplicates and searches with binary search. The fixed-width storage supports 30 visible characters plus the null terminator; longer input is truncated. Sorting pointers or indices reduces swap work from copying O(L) characters to O(1) pointer/index movement, at the cost of O(n) extra storage and indirection.
 
-## Compilation process
-1. `gcc -E file.c -o file.i` – preprocess.
-2. `gcc -S file.c -o file.s` – compile to assembly.
-3. `gcc -c file.c -o file.o` – assemble to object code.
-4. `gcc file.o -o program` – link.
-5. `gcc -Wall -Wextra -Wconversion -std=c11 file.c -o program` – build with useful warnings.
+## Q7 – Election Counting Program (Student B: Implementation and Measurement)
+The program validates candidate IDs, counts valid and invalid votes, sorts candidate totals descending, identifies the winner and detects a tie. The sample input has 3 candidates and 8 votes: `1 2 2 3 0 -1 4 1`. Expected valid votes=6, invalid votes=2; candidate 1=2, candidate 2=2, candidate 3=1; candidates 1 and 2 tie. Counting is O(v), and selection-sorting candidate totals is O(c²), giving O(v+c²) overall. The program supports 500,000 votes for the required large experiment. Run it with generated 5,000- and 500,000-vote input files and record the displayed time.
 
-## Test plan
-| Case | Input/condition | Expected result |
-|---|---|---|
-| Zero usage | 0 to 0 | 0 units, ₹50.00 |
-| Slab boundary | 0 to 100 | 100 units, ₹50.00 |
-| Second boundary | 0 to 200 | 200 units, ₹275.00 |
-| Ordinary usage | 1200 to 1530 | 330 units, ₹860.00 |
-| Rollover | 65400 to 120 | 256 units, ₹527.00 |
-| Invalid text | letters instead of integer | Clear error; no bill |
-| Out-of-range reading | greater than 65535 | Reject input |
+## Experimental evidence to complete on the student's computer
+| Question | Evidence to save |
+|---|---|
+| Q1 | CSV comparisons for all three sizes and successful/unsuccessful searches |
+| Q2 | `results.csv`; graphs of comparisons and movements by algorithm/input order |
+| Q4 | Actual row-wise and column-wise traversal times |
+| Q6 | Test names including 29-, 30- and over-30-character cases; present/missing searches |
+| Q7 | Timing runs for 5,000 and 500,000 votes; small hand-checked test |
 
-The expected results above are calculated from the stated tariff. Actual results and screenshots must be captured after compiling and executing on the student's system.
-
-## Task 12 – Day-4 Smart-meter challenge
-The new meter reports watt-hours every 15 minutes (35,040 readings in a 365-day year). The design must accumulate yearly watt-hours, classify each interval as peak or off-peak, apply different rates, and permit tariff changes without recompilation. Compile-time `#define` tariff values are no longer appropriate for tariffs intended to be changed by an operator. The Task12 program reads tariff values at runtime and accumulates watt-hours and charges using 64-bit integer variables.
-
-A robust production version should additionally load tariff configuration from a validated file or authenticated management interface, handle leap years/time-zone rules, use timestamps rather than a manually entered peak flag, log corrections, and check every multiplication/addition for overflow. The sample is an educational demonstration and not a production billing system.
+Do not invent timing measurements or screenshots. Run the programs on the target laptop/compiler and paste the actual results into this report. Add one screenshot per question showing successful compilation and execution.
 
 ## Final recommendation
-Retain the simple slab formula but modify the implementation: use fixed-width integer types, integer paise, explicit input validation, a separate billing function, header guards, compiler warnings, and tests. For smart meters, redesign tariff handling around runtime configuration and time-stamped intervals. This is more reliable than merely widening the old variables because the requirements have changed, not just the size of the numbers.
-
-## Evidence to add before submission
-- Actual `gcc --version` output.
-- Compilation and execution screenshots for every task.
-- Exact commands and actual outputs.
-- Measurements from the student's system for scale tests.
-- UML/activity diagram and any required handwritten/teacher-provided format.
-- Final GitHub URL, verified after pushing the repository.
+Use binary search for frequently queried sorted numeric data, insertion sort for nearly sorted registers, linear merge for already sorted merit lists, row-major 2-D arrays with row-wise traversal, bounded string input/copy functions, and a count array for election totals. These choices reduce unnecessary work while keeping the implementation understandable and testable.

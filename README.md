@@ -1,39 +1,37 @@
-# CSA02-1912260411-Assignment2
+# CSA02 C Programming – Assignment 3 (Student B)
 
-- Student name: V. Hinduja
-- Register number: 1912260411
-- Course: CSA02 C Programming - Assignment 2 (CO2): operators, decision making and loops
-- Compiler and version: gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
-- Compile flags used everywhere: `-Wall -Wextra -std=c11 -O0` (add `-lm` for Q1 and Q6)
+**Student:** V. Hinduja  
+**Register number:** 1912260411  
+**Course:** CSA02 – C Programming, CO3  
+**Compiler:** GCC (record the exact installed version using `gcc --version`)
 
-## Folders
+## Scope
+This repository contains the Student B primary-responsibility sections for Q1–Q7, together with the shared executable code required to demonstrate those sections. It does not claim to contain Student A's separately assigned primary write-ups.
 
-| Folder | Task | Marks |
-|---|---|---|
-| Q1 | Precedence, Associativity and the Discount Bug | 6 |
-| Q2 | When Does Short-Circuit Evaluation Matter? | 4 |
-| Q3 | Device-Status Register with Bitwise Operators | 6 |
-| Q4 | else-if Ladder or switch? | 6 |
-| Q5 | Count the Work Done by a Loop (Prime Checking) | 7 |
-| Q6 | Loops That Must Terminate: Loan Repayment Schedule | 8 |
-| Q7 | Day-4 Design Challenge: Diagnose, Redesign and Validate | 13 |
+## Folder contents
+- `Q1/` – searching experiment and comparison-count program
+- `Q2/` – three sorting algorithms and measurement generator
+- `Q3/` – descending merge implementation and correctness analysis
+- `Q4/` – rainfall computations and row/column traversal benchmark
+- `Q5/` – string-library comparison and safe string handling
+- `Q6/` – name sorting, duplicate detection and binary search
+- `Q7/` – election counting, validation, sorting and tie detection
+- `REPORT.md` – consolidated Student B report
 
-Each folder contains the C source, captured outputs, `screenshots/`, a `README.md` (exact compile command, run steps, result note) and `observations.md` (predictions, counts, complexity analysis).
+## Compile and run
+Run each command from its question folder:
+- Q1: `gcc -std=c11 -O2 main.c -o q1` then `./q1`
+- Q2: `gcc -std=c11 -O2 main.c -o q2` then `./q2 > results.csv`
+- Q3: `gcc -std=c11 -O2 main.c -o q3` then `./q3`
+- Q4: `gcc -std=c11 -O2 main.c -o q4` then `./q4`; benchmark: `gcc -std=c11 -O2 benchmark.c -o benchmark` then `./benchmark`
+- Q5: `gcc -std=c11 -O2 main.c -o q5` then `./q5`
+- Q6: `gcc -std=c11 -O2 main.c -o q6` then `./q6`
+- Q7: `gcc -std=c11 -O2 main.c -o q7` then `./q7 < sample_input.txt`
 
-## Result of each question
-
-- **Q1** - All 4 hand predictions matched the program. The original expression is wrong because GST is charged on the undiscounted amount and integer division drops paise (errors +4.50, +1.83, +11.25, -0.75). Corrected with intermediate variables and brackets. count = count++ + 1 is undefined behaviour (gcc -Wall warns).
-- **Q2** - Short-circuit && / || skipped the right operand exactly when the left decided the result; & and | never skip. Slow-call counts for 1,000 passengers: 902 (short-circuit, cheap first), 1000 (slow first, or & |); 210 vs 1000 when the slow call sits inside an &&. Audit log changes the recommendation.
-- **Q3** - TODO 1-4 completed with only bitwise operators; output matches the expected 00000101 / 00000110 / AC is ON, PUMP is OFF. All 9 predicted register values matched. Precedence and signed char pitfalls demonstrated. 1 byte vs 8 bytes per home.
-- **Q4** - Ladder, switch and lookup table agree on all 15 boundary tests and the 141-value sweep; the unguarded switch is wrong for 40 values. Removing a return/case changes 100:S 95:S to 100:A 95:A etc. Scholarship rule implemented with a 6x4 table and checked against nested if on 909 combinations.
-- **Q5** - Complete-the-code output matches exactly (8, 1, 87, 999 divisions). Naive loop needs 1,000,001 divisions for 1,000,003; improved loop 999. do-while fails for n=2 without a guard; i*i wraps at i=65536 for 32-bit values.
-- **Q6** - Loan of Rs 10,000 at 2% with Rs 2,000 repayments clears in 6 months, total interest Rs 645.38, matching the hand schedule. Loop uses while (balance > 0.005) with a 360-month safety limit; repayment <= interest is reported instead of looping forever.
-- **Q7** - Redesigned the Q5 prime checker. Predictions held exactly. Total divisions for tickets 0..1,000,003: 67,741,504 (original) -> 23,713,457 (wheel, -65.0%) -> 13,927,597 (prime table, -79.4%), zero wrong answers, 672 bytes extra memory.
-
-## Running a program
-
-```
-cd Q5
-gcc -Wall -Wextra -std=c11 -O0 -o q5_analysis q5_analysis.c
-./q5_analysis
-```
+## Submission checklist
+1. Run `gcc --version` and record the actual version in the report.
+2. Execute each program on your own computer and capture terminal screenshots.
+3. Save Q1/Q2 CSV measurements and Q4 benchmark timings from your computer.
+4. Add the screenshots and measured results to the relevant question folders.
+5. Create the GitHub repository `CSA02-1912260411-Assignment3`, upload folders, and commit progressively (at least one commit per question).
+6. Add the working repository URL to the report cover page and share it with the faculty.

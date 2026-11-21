@@ -1,0 +1,9 @@
+Valid votes: 5
+Invalid votes: 3
+Candidate vote totals (descending):
+Candidate 1: 2
+Candidate 2: 2
+Candidate 3: 1
+Winner: Candidate 1
+Tie: Yes
+Processing time: 0.000006 seconds
