@@ -1,0 +1,39 @@
+=== Q1: Jan Aushadhi billing - buggy single expression ===
+
+Bill A: price=120 qty=5 senior=1
+    t1=p*q=600 | t2=p*q*15=9000 | t3=t2/100=90 | t4=t3*senior=90 | t5=p*q*5=3000 | t6=t5/100=30
+    total = t1 - t4 + t6 = 600 - 90 + 30 = 540
+    predicted total=540 net=540 | observed total=540 net=540 -> PREDICTION CORRECT
+    pharmacist intended (double): total=535.5000 net=535.5000 | error of buggy total = +4.5000
+
+Bill B: price=33 qty=7 senior=1
+    t1=p*q=231 | t2=p*q*15=3465 | t3=t2/100=34 | t4=t3*senior=34 | t5=p*q*5=1155 | t6=t5/100=11
+    total = t1 - t4 + t6 = 231 - 34 + 11 = 208
+    predicted total=208 net=208 | observed total=208 net=208 -> PREDICTION CORRECT
+    pharmacist intended (double): total=206.1675 net=206.1675 | error of buggy total = +1.8325
+
+Bill C: price=750 qty=2 senior=1
+    t1=p*q=1500 | t2=p*q*15=22500 | t3=t2/100=225 | t4=t3*senior=225 | t5=p*q*5=7500 | t6=t5/100=75
+    total = t1 - t4 + t6 = 1500 - 225 + 75 = 1350
+    predicted total=1350 net=1300 | observed total=1350 net=1300 -> PREDICTION CORRECT
+    pharmacist intended (double): total=1338.7500 net=1288.7500 | error of buggy total = +11.2500
+
+Bill D: price=45 qty=3 senior=0
+    t1=p*q=135 | t2=p*q*15=2025 | t3=t2/100=20 | t4=t3*senior=0 | t5=p*q*5=675 | t6=t5/100=6
+    total = t1 - t4 + t6 = 135 - 0 + 6 = 141
+    predicted total=141 net=141 | observed total=141 net=141 -> PREDICTION CORRECT
+    pharmacist intended (double): total=141.7500 net=141.7500 | error of buggy total = -0.7500
+
+Predictions correct: 4 of 4
+
+=== Corrected program: single bracketed expression vs intermediate variables ===
+Bill    buggy_total  fixed_total fixed_single       |diff|
+A               540     535.5000     535.5000     0.00e+00
+B               208     206.1675     206.1675     0.00e+00
+C              1350    1338.7500    1338.7500     0.00e+00
+D               141     141.7500     141.7500     0.00e+00
+
+Timing for 50000000 bills: one expression = 0.156 s, intermediate variables = 0.197 s
+Operator count - original: 6 mult, 2 div, 1 sub, 1 add = 10 (price*qty evaluated 3 times)
+Operator count - intermediate: 3 mult, 2 div, 1 sub, 1 add = 7 (price*qty evaluated once)
+Extra space: 5 temporaries (gross, discount, taxable, gst, total) = 40 bytes of doubles

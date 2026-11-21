@@ -1,0 +1,34 @@
+=== 1. Division counts: original (i<n) vs improved (i*i<=n) ===
+      ticket result         naive(i<n)          for        while       do-while
+          97 prime                  95            8            8              8 
+         100 not prime               1            1            1              1 
+        7919 prime                7917           87           87             87 
+     1000003 prime             1000001          999          999            999 
+   999999937 prime           999999935        31621        31621          31621 
+  2147483647 prime          2147483645        46339        46339          46339 
+
+=== 2. Boundary / special cases: all four versions + unsafe do-while ===
+     n naive     for       while     do-while  do-while-unsafe divs(unsafe)
+     0 no        no        no        no        no             0 
+     1 no        no        no        no        no             0 
+     2 prime     prime     prime     prime     no             1 <-- WRONG
+     3 prime     prime     prime     prime     prime          1 
+     4 no        no        no        no        no             1 
+     5 prime     prime     prime     prime     prime          1 
+     9 no        no        no        no        no             2 
+    25 no        no        no        no        no             4 
+    49 no        no        no        no        no             6 
+
+=== 3. Overflow of i * i ===
+  uint32_t i=65535: i*i = 4294836225   i=65536: i*i = 0 (wrapped!)   i=65537: i*i = 131073
+  n = 4294967291 (largest 32-bit prime): after i=65535, i*i wraps to 0 <= n, the test stays true,
+  and the loop keeps running past sqrt(n); it would only stop when i reaches n (n % n == 0) -> WRONG 'composite'.
+  Safe condition i <= n / i: ticket 4294967291 -> prime, divisions = 65534 (sqrt = 65535.99)
+  (with 64-bit unsigned long the same wrap occurs for n near 2^64, i.e. i >= 2^32)
+
+=== 4. Bulk comparison: every n from 0..N ===
+  N = 100000 : primes found = 9592, disagreements between 4 loops and sieve = 0
+  total divisions: naive = 455189150, improved = 2745694, sieve marking operations = 193078
+  time: naive = 1.1897 s, improved = 0.0076 s, sieve (build) = 0.0004 s
+  N = 1000003 : improved trial division, total divisions = 67741504 (worst single ticket 1000003 needs 999), time = 0.1813 s
+            sieve: marking operations = 2122051, memory = 1000004 bytes, time = 0.0044 s
