@@ -1,0 +1,28 @@
+TASK 11 – RECOMMEND AND DEFEND THE FINAL DESIGN
+
+Recommendation:
+Retain the modular function-based design, but use Decimal for all money and analyser
+readings, explicit validation, a single rate-card module and automated tests. Construct
+Decimal from input strings. Use ROUND_HALF_UP for currency to two decimal places.
+Round each entry payment to the nearest paisa before adding it to the ten-day total,
+subject to the co-operative/bank settlement policy.
+
+Rate revision: change the central rate-card values once, run the full test suite, obtain
+approval and record the effective date/version. A better production version loads a
+versioned rate card from a configuration file and stores the rate-card version with
+every transaction.
+
+Limitations: current example assumes SNF 6.0%–10.0%; this must be confirmed. It does
+not include database transactions, authentication, backup, duplicate-entry detection,
+analyser calibration or audit logging. The simple script is not a full banking system.
+
+District scale: 150,000 entries is O(n) and practical for Python; Decimal is slower
+than float but correctness is more important for financial settlement. For reliability,
+persist each reading and payment in a database, process in batches, and maintain
+transaction-safe farmer totals.
+
+Alternative JSON configuration:
+Read t configuration values at start-up: O(t) time and O(t) memory. The tiny one-time
+read cost is outweighed by easier seasonal revisions without editing program source.
+Validate the file schema, preserve effective dates and version history, and fail safely
+if values are missing or invalid.
